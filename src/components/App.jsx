@@ -7,11 +7,11 @@ import { ContactForm } from './ContactForm/ContactForm.js';
 import { ContactFilter } from './Filter/Filter';
 
 const getFilteredContacts = () => {
-     const savedContact = localStorage.getItem('new-contact');
-
-    if (savedContact !== null) {
-      return JSON.parse(savedContact)
-    }
+  const savedContact = localStorage.getItem('new-contact');
+  return savedContact !== null ? JSON.parse(savedContact) : [];
+    // if (savedContact !== null) {
+    //   return JSON.parse(savedContact)
+    // }
 }
 
 export const App = () => {
@@ -22,16 +22,17 @@ export const App = () => {
  
   const addContact = newContact => {
 
-      setContacts(prevContacts => {
-        if (prevContacts.find(contact => contact.name.toLowerCase() === newContact.name.toLowerCase())) {
-          return alert(`${newContact.name} is already in contacts!`);
-        }
-        return [...prevContacts,
-          {
-            ...newContact,
-            id: nanoid(),
-          },
-        ]
+    setContacts(prevContacts => {
+      if (prevContacts.find(contact => contact.name.toLowerCase() === newContact.name.toLowerCase())) {
+        alert(`${newContact.name} is already in contacts!`);
+        return prevContacts
+      }
+      return [...prevContacts,
+      {
+        ...newContact,
+        id: nanoid(),
+      },
+      ]
     })
   }
   
@@ -48,8 +49,16 @@ export const App = () => {
     setFilter(contactSearch)
   }
 
-  const filteredContacts = contacts.filter(contact =>
-    contact.name.toLowerCase().includes(filter.toLowerCase()))
+  // const filteredContacts = contacts.filter(contact =>
+  //   contact.name.toLowerCase().includes(filter.toLowerCase()))
+
+  const filteredContacts = contacts.filter(contact => {
+      const hasSimilar = contact.name
+        .toLowerCase()
+        .includes(filter.toLowerCase())
+    return hasSimilar;
+    })
+
 
   return (
       <div style={{margin: '24px'}}>
